@@ -1,35 +1,47 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter, Navigate, Route, Routes } from "react-router";
+import Homepage from "./pages/Homepage";
+import Products from "./pages/Products";
+import Cart from "./pages/Cart";
+import Register from "./pages/Register";
+import PageNotFound from "./pages/PageNotFound";
+import SignUp from "./components/auth/SignUp";
+import Login from "./components/auth/Login";
+import { createContext, useState } from "react";
+// import Navbar from "./components/Navbar";
+
+
+// 1 CREATE A CONTEXT
+export const AuthContext = createContext();
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [user, setUser] = useState(
+    {
+      name: "Jatin Khatri",
+      email: "jatinkhtri245@gmail.com",
+      password: "12345678",
+    },
+  );
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <AuthContext.Provider value={{user, setUser}}>
+
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Homepage />} />
+          <Route path="products" element={<Products />} />
+          <Route path="cart" element={<Cart />} />
+          <Route path="register" element={<Register />}>
+            <Route index element={<Navigate replace to={"login"} />} />
+            <Route path="login" element={<Login />} />
+            <Route path="signup" element={<SignUp />} />
+          </Route>
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
+      </BrowserRouter>
+      </AuthContext.Provider>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
